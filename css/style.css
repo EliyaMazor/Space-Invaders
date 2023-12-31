@@ -1,0 +1,26 @@
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    background-color: rgb(245, 245, 245);
+    color: rgb(6, 6, 6);
+}
+
+.board-container{
+    /* width: 300px;
+    height: auto; */
+    position: absolute;
+    margin: auto;
+    /* cursor: none; */
+}
+
+table{
+    width: auto;
+    height: auto;
+}
+
+td{
+    width: 50px;
+    height: 50px;
+    border: solid 1px rgb(6, 6, 6);
+    
+}
