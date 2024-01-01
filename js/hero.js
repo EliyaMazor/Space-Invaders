@@ -1,9 +1,13 @@
 'use strict'
 
 const LASER_SPEED = 80
-var gLaserInterval
+var gIntervalLaser
 
-var gHero = { pos: { i: 12, j: 5 }, isShoot: false, score: 0 }
+var gHero = { 
+  pos: { i: 12, j: 5 }, 
+  score: 0,
+  isShoot: false, 
+ }
 
 
 function createHero(board) {
@@ -23,6 +27,8 @@ function onKeyDown(ev) {
     case ' ':
       shoot()
       break
+      case 'n':
+
   }
 }
 
@@ -40,7 +46,7 @@ function shoot() {
   if (gHero.isShoot) return
   gHero.isShoot = true
   const laserPos = { i: gHero.pos.i - 1, j: gHero.pos.j }
-  gLaserInterval = setInterval(blinkLaser, 200, laserPos)
+  gIntervalLaser = setInterval(blinkLaser, 200, laserPos)
 }
 
 function blinkLaser(pos) {
@@ -49,7 +55,7 @@ function blinkLaser(pos) {
         handleAlienHit(pos)
     }
 
-    clearInterval(gLaserInterval)
+    clearInterval(gIntervalLaser)
     gHero.isShoot = false
     return
   }

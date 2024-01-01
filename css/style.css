@@ -24,3 +24,7 @@ td{
     border: solid 1px rgb(6, 6, 6);
     
 }
+
+.hide{
+    display: none;
+}

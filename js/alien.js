@@ -3,13 +3,12 @@
 const ALIEN_SPEED = 500
 var gIntervalAliens
 
-var gAliensTopRowIdx
-var gAliensBottomRowIdx
-var gAliensRightColIdx
-var gAliensLeftColIdx
+var gAliens = {}
 
-var gIsAlienFreeze = false
-var gIsAlienMoveRight = true
+// var gAliens.topRowIdx
+// var gAliens.bottomRowIdx
+// var gAliens.rightColIdx
+// var gAliens.leftColIdx
 
 function createAliens(board) {
   for (var i = 0; i < ALIEN_ROW_COUNT; i++) {
@@ -17,38 +16,40 @@ function createAliens(board) {
       board[i][j] = createCell(ALIEN)
     }
   }
-  gAliensTopRowIdx = 0
-  gAliensBottomRowIdx = ALIEN_ROW_COUNT - 1
-  gAliensRightColIdx = 7
-  gAliensLeftColIdx = 0
+  gAliens.topRowIdx = 0
+  gAliens.bottomRowIdx = ALIEN_ROW_COUNT - 1
+  gAliens.rightColIdx = ALIEN_ROW_LENGTH - 1
+  gAliens.leftColIdx = 0
+  gAliens.isFreeze = false
+  gAliens.isMoveRight = true
 }
 
 function handleAlienHit(pos) {
-  clearInterval(gLaserInterval)
-  updateCell(pos)
+  clearInterval(gIntervalLaser)
   gHero.isShoot = false
+  updateCell(pos)
   gGame.alienCount--
   gHero.score += 10
   console.log('aliens left: ', gGame.alienCount, ' score: ', gHero.score)
   if (!gGame.alienCount) return endGame()
   if (
-    pos.i === gAliensBottomRowIdx &&
-    gAliensBottomRowIdx !== gAliensTopRowIdx
+    pos.i === gAliens.bottomRowIdx &&
+    gAliens.bottomRowIdx !== gAliens.topRowIdx
   ) {
     updateAliensBottomRowIdx(pos.i)
   }
 }
 
 function updateAliensBottomRowIdx(i) {
-  for (var j = gAliensLeftColIdx; j <= gAliensRightColIdx; j++) {
+  for (var j = gAliens.leftColIdx; j <= gAliens.rightColIdx; j++) {
     if (gBoard[i][j].gameObject === ALIEN) return
   }
-  gAliensBottomRowIdx--
+  gAliens.bottomRowIdx--
 }
 
 function shiftBoardRight(board) {
-  for (var i = gAliensTopRowIdx; i <= gAliensBottomRowIdx; i++) {
-    for (var j = gAliensRightColIdx; j >= gAliensLeftColIdx; j--) {
+  for (var i = gAliens.topRowIdx; i <= gAliens.bottomRowIdx; i++) {
+    for (var j = gAliens.rightColIdx; j >= gAliens.leftColIdx; j--) {
       const currCell = board[i][j]
       const nextCell = board[i][j + 1]
       if (currCell.gameObject === LASER) continue
@@ -66,13 +67,13 @@ function shiftBoardRight(board) {
     }
   }
 
-  gAliensRightColIdx++
-  gAliensLeftColIdx++
+  gAliens.rightColIdx++
+  gAliens.leftColIdx++
 }
 
 function shiftBoardLeft(board) {
-  for (var i = gAliensTopRowIdx; i <= gAliensBottomRowIdx; i++) {
-    for (var j = gAliensLeftColIdx; j <= gAliensRightColIdx; j++) {
+  for (var i = gAliens.topRowIdx; i <= gAliens.bottomRowIdx; i++) {
+    for (var j = gAliens.leftColIdx; j <= gAliens.rightColIdx; j++) {
       const currCell = board[i][j]
       const nextCell = board[i][j - 1]
       if (currCell.gameObject === LASER) continue
@@ -87,13 +88,13 @@ function shiftBoardLeft(board) {
       updateCell({ i: i, j: j })
     }
   }
-  gAliensRightColIdx--
-  gAliensLeftColIdx--
+  gAliens.rightColIdx--
+  gAliens.leftColIdx--
 }
 
 function shiftBoardDown(board) {
-  for (var i = gAliensBottomRowIdx; i >= gAliensTopRowIdx; i--) {
-    for (var j = gAliensLeftColIdx; j <= gAliensRightColIdx; j++) {
+  for (var i = gAliens.bottomRowIdx; i >= gAliens.topRowIdx; i--) {
+    for (var j = gAliens.leftColIdx; j <= gAliens.rightColIdx; j++) {
       const currCell = board[i][j]
       const nextCell = board[i + 1][j]
       if (currCell.gameObject === LASER) continue
@@ -109,22 +110,22 @@ function shiftBoardDown(board) {
     }
   }
 
-  gAliensTopRowIdx++
-  gAliensBottomRowIdx++
-  if (gAliensBottomRowIdx === gHero.pos.i) return endGame()
+  gAliens.topRowIdx++
+  gAliens.bottomRowIdx++
+  if (gAliens.bottomRowIdx === gHero.pos.i) return endGame()
 
-  gIsAlienMoveRight = !gIsAlienMoveRight
+  gAliens.isMoveRight = !gAliens.isMoveRight
 }
 
 function moveAliens() {
-  if (gIsAlienFreeze) return
+  if (gAliens.isFreeze) return
 
   if (
-    (gAliensLeftColIdx === 0 && !gIsAlienMoveRight) ||
-    (gAliensRightColIdx === BOARD_SIZE - 1 && gIsAlienMoveRight)
+    (gAliens.leftColIdx === 0 && !gAliens.isMoveRight) ||
+    (gAliens.rightColIdx === BOARD_SIZE - 1 && gAliens.isMoveRight)
   )
     return shiftBoardDown(gBoard)
 
-  if (gIsAlienMoveRight) shiftBoardRight(gBoard)
+  if (gAliens.isMoveRight) shiftBoardRight(gBoard)
   else shiftBoardLeft(gBoard)
 }
