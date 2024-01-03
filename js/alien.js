@@ -5,11 +5,6 @@ var gIntervalAliens
 
 var gAliens = {}
 
-// var gAliens.topRowIdx
-// var gAliens.bottomRowIdx
-// var gAliens.rightColIdx
-// var gAliens.leftColIdx
-
 function createAliens(board) {
   for (var i = 0; i < ALIEN_ROW_COUNT; i++) {
     for (var j = 0; j < ALIEN_ROW_LENGTH; j++) {
@@ -30,6 +25,7 @@ function handleAlienHit(pos) {
   updateCell(pos)
   gGame.alienCount--
   gHero.score += 10
+  updatePanel()
   console.log('aliens left: ', gGame.alienCount, ' score: ', gHero.score)
   if (!gGame.alienCount) return endGame()
   if (
@@ -52,11 +48,14 @@ function shiftBoardRight(board) {
     for (var j = gAliens.rightColIdx; j >= gAliens.leftColIdx; j--) {
       const currCell = board[i][j]
       const nextCell = board[i][j + 1]
-      if (currCell.gameObject === LASER) continue
-      if (nextCell.gameObject === LASER) {
+      if (currCell.gameObject === LASER ||
+         currCell.gameObject === SUPER_LASER)
+        continue
+      if (
+        nextCell.gameObject === LASER ||
+        nextCell.gameObject === SUPER_LASER
+      ) {
         handleAlienHit({ i: i, j: j + 1 })
-        // clearInterval(gLaserInterval)
-        // nextCell.gameObject = ''
         updateCell({ i: i, j: j + 1 })
       } else {
         nextCell.gameObject = currCell.gameObject
@@ -76,8 +75,13 @@ function shiftBoardLeft(board) {
     for (var j = gAliens.leftColIdx; j <= gAliens.rightColIdx; j++) {
       const currCell = board[i][j]
       const nextCell = board[i][j - 1]
-      if (currCell.gameObject === LASER) continue
-      if (nextCell.gameObject === LASER) {
+      if (currCell.gameObject === LASER ||
+         currCell.gameObject === SUPER_LASER)
+        continue
+      if (
+        nextCell.gameObject === LASER ||
+        nextCell.gameObject === SUPER_LASER
+      ) {
         handleAlienHit({ i: i, j: j - 1 })
         updateCell({ i: i, j: j - 1 })
       } else {
@@ -97,8 +101,13 @@ function shiftBoardDown(board) {
     for (var j = gAliens.leftColIdx; j <= gAliens.rightColIdx; j++) {
       const currCell = board[i][j]
       const nextCell = board[i + 1][j]
-      if (currCell.gameObject === LASER) continue
-      if (nextCell.gameObject === LASER) {
+      if (currCell.gameObject === LASER ||
+         currCell.gameObject === SUPER_LASER)
+        continue
+      if (
+        nextCell.gameObject === LASER ||
+        nextCell.gameObject === SUPER_LASER
+      ) {
         handleAlienHit({ i: i + 1, j: j })
         updateCell({ i: i + 1, j: j })
       } else {
