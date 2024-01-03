@@ -3,7 +3,7 @@ body {
   text-align: center;
   color: rgb(245, 245, 245);
   background-color: rgb(6, 6, 6);
-  background-image: url(../img/stars.jpg);
+  background-image: url(..img/stars.jpg);
   background-size: cover;
 }
 
@@ -35,7 +35,7 @@ table {
   
   border: solid 0.2rem rgb(34, 69, 3);
   border-radius: 10%;
-  background-image: url(../img/stars.avif);
+  background-image: url(..img/stars.avif);
   background-size: cover;
 }
 
