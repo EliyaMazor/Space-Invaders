@@ -22,12 +22,23 @@ function createAliens(board) {
 function handleAlienHit(pos) {
   clearInterval(gIntervalLaser)
   gHero.isShoot = false
-  updateCell(pos)
+  updateCell(pos, EXPLOSION)
+  playSound('sound/explosion.mp3')
+  setTimeout(() => updateCell(pos), 80)
+
   gGame.alienCount--
   gHero.score += 10
   updatePanel()
-  console.log('aliens left: ', gGame.alienCount, ' score: ', gHero.score)
-  if (!gGame.alienCount) return endGame()
+  console.log(
+    'aliens left: ',
+    gGame.alienCount,
+    ' score: ',
+    gHero.score,
+    'pos: ',
+    pos
+  )
+  if (!gGame.alienCount) return endGame('win')
+
   if (
     pos.i === gAliens.bottomRowIdx &&
     gAliens.bottomRowIdx !== gAliens.topRowIdx
@@ -36,9 +47,9 @@ function handleAlienHit(pos) {
   }
 }
 
-function updateAliensBottomRowIdx(i) {
+function updateAliensBottomRowIdx(row) {
   for (var j = gAliens.leftColIdx; j <= gAliens.rightColIdx; j++) {
-    if (gBoard[i][j].gameObject === ALIEN) return
+    if (gBoard[row][j].gameObject === ALIEN) return
   }
   gAliens.bottomRowIdx--
 }
@@ -48,15 +59,18 @@ function shiftBoardRight(board) {
     for (var j = gAliens.rightColIdx; j >= gAliens.leftColIdx; j--) {
       const currCell = board[i][j]
       const nextCell = board[i][j + 1]
-      if (currCell.gameObject === LASER ||
-         currCell.gameObject === SUPER_LASER)
+      if (
+        currCell.gameObject === LASER ||
+        currCell.gameObject === SUPER_LASER ||
+        currCell.gameObject === EXPLOSION
+      )
         continue
       if (
         nextCell.gameObject === LASER ||
         nextCell.gameObject === SUPER_LASER
       ) {
         handleAlienHit({ i: i, j: j + 1 })
-        updateCell({ i: i, j: j + 1 })
+        console.log('from movement')
       } else {
         nextCell.gameObject = currCell.gameObject
         updateCell({ i: i, j: j + 1 }, currCell.gameObject)
@@ -75,15 +89,18 @@ function shiftBoardLeft(board) {
     for (var j = gAliens.leftColIdx; j <= gAliens.rightColIdx; j++) {
       const currCell = board[i][j]
       const nextCell = board[i][j - 1]
-      if (currCell.gameObject === LASER ||
-         currCell.gameObject === SUPER_LASER)
+      if (
+        currCell.gameObject === LASER ||
+        currCell.gameObject === SUPER_LASER ||
+        currCell.gameObject === EXPLOSION
+      )
         continue
       if (
         nextCell.gameObject === LASER ||
         nextCell.gameObject === SUPER_LASER
       ) {
         handleAlienHit({ i: i, j: j - 1 })
-        updateCell({ i: i, j: j - 1 })
+        console.log('from movement')
       } else {
         nextCell.gameObject = currCell.gameObject
         updateCell({ i: i, j: j - 1 }, currCell.gameObject)
@@ -101,15 +118,18 @@ function shiftBoardDown(board) {
     for (var j = gAliens.leftColIdx; j <= gAliens.rightColIdx; j++) {
       const currCell = board[i][j]
       const nextCell = board[i + 1][j]
-      if (currCell.gameObject === LASER ||
-         currCell.gameObject === SUPER_LASER)
+      if (
+        currCell.gameObject === LASER ||
+        currCell.gameObject === SUPER_LASER ||
+        currCell.gameObject === EXPLOSION
+      )
         continue
       if (
         nextCell.gameObject === LASER ||
         nextCell.gameObject === SUPER_LASER
       ) {
         handleAlienHit({ i: i + 1, j: j })
-        updateCell({ i: i + 1, j: j })
+        console.log('from movement')
       } else {
         nextCell.gameObject = currCell.gameObject
         updateCell({ i: i + 1, j: j }, currCell.gameObject)
@@ -121,7 +141,7 @@ function shiftBoardDown(board) {
 
   gAliens.topRowIdx++
   gAliens.bottomRowIdx++
-  if (gAliens.bottomRowIdx === gHero.pos.i) return endGame()
+  if (gAliens.bottomRowIdx === gHero.pos.i) return endGame('loss')
 
   gAliens.isMoveRight = !gAliens.isMoveRight
 }

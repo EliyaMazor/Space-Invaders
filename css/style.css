@@ -2,7 +2,6 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   text-align: center;
   color: rgb(245, 245, 245);
-  background-color: rgb(6, 6, 6);
   background-image: url(..img/stars.jpg);
   background-size: cover;
 }
@@ -15,10 +14,11 @@ h1,
 button {
   background-color: #73bd03;
   color: rgb(245, 245, 245);
+  border-radius: 10%;
 
   width: auto;
   height: auto;
-  font-size: 1rem;
+  font-size: 2rem;
   cursor: pointer;
 }
 
@@ -35,8 +35,7 @@ table {
   
   border: solid 0.2rem rgb(34, 69, 3);
   border-radius: 10%;
-  background-image: url(..img/stars.avif);
-  background-size: cover;
+  background-color: rgb(6, 6, 6, 60%);
 }
 
 td {
@@ -51,4 +50,14 @@ td img {
 
 .hide {
   display: none;
+}
+
+.animation{
+  animation: color-change 1s infinite;
+}
+
+@keyframes color-change {
+  0% { color: #73bd03; }
+  50% { color: rgb(255, 248, 114) }
+  100% { color: #73bd03; }
 }

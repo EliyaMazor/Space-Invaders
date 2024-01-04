@@ -15,7 +15,7 @@ function createBoard(ROWS, COLS) {
   return mat
 }
 
-function countNeighborsCells(board, rowIdx, colIdx) {
+function BlowUpNeighborsCells(board, rowIdx, colIdx) {
   for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
     if (i < 0 || i >= board.length) continue
     for (var j = colIdx - 1; j <= colIdx + 1; j++) {
@@ -23,7 +23,7 @@ function countNeighborsCells(board, rowIdx, colIdx) {
       var currCell = board[i][j]
       if (currCell.gameObject === ALIEN) {
         handleAlienHit({ i: i, j: j })
-        updateCell({ i: i, j: j })
+        console.log('from blowing up')
       }
     }
   }
@@ -31,18 +31,15 @@ function countNeighborsCells(board, rowIdx, colIdx) {
 
 function getRandEmptyCell() {
   var emptyCells = []
-  for (var i = 0; i < gBoard.length; i++) {
-    for (var j = 0; j < gBoard[i].length; j++) {
-      const currCell = gBoard[i][j]
-      if (currCell === EMPTY) {
-        emptyCells.push({ i, j })
-      }
+  for (var j = 0; j < gBoard[0].length; j++) {
+    const currCell = gBoard[0][j]
+    if (!currCell.gameObject) {
+      emptyCells.push({ i: 0, j })
     }
   }
+
   if (!emptyCells.length) return null
-
   const randIdx = getRandomInt(0, emptyCells.length)
-
   return emptyCells[randIdx]
 }
 

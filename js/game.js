@@ -6,8 +6,10 @@ const ALIEN_ROW_COUNT = 3
 
 const HERO = '<img src="img/hero.png">'
 const ALIEN = '<img src="img/alien.png">'
+const CANDY = '<img src="img/candy.png">'
 const LASER = '<img src="img/laser.png">'
 const SUPER_LASER = '<img src="img/super-laser.png">'
+const EXPLOSION = '<img src="img/explosion.png">'
 const SKY = 'sky'
 const EARTH = 'earth'
 
@@ -24,19 +26,22 @@ function init() {
 function startGame(elBtn) {
   if (elBtn.innerText === 'Restart') init()
   
-  toggleStartBtn()
+  playSound('sound/space-music.mp3')
+  toggle()
   gGame.alienCount = ALIEN_ROW_COUNT * ALIEN_ROW_LENGTH
   gHero.score = 0
   gGame.isOn = true
   gHero.isSuper = false
-  gHero.super = 3
+  gHero.superCount = 3
   
   updatePanel()
+  gIntervalCandy = setInterval(addCandy, 10000)
   gIntervalAliens = setInterval(moveAliens, 1000)
 }
 
-function toggleStartBtn() {
+function toggle() {
   document.querySelector('.start-btn').classList.toggle('hide')
+  document.querySelector('.game-result').classList.toggle('hide')
 }
 
 function renderBoard(board) {
@@ -82,18 +87,20 @@ function getElCell(pos) {
 function updatePanel(){
   document.querySelector('.aliens-left').innerText = gGame.alienCount
   document.querySelector('.score').innerText = gHero.score
+  document.querySelector('.super-attack').innerText = gHero.superCount
 }
 
-function endGame() {
+function endGame(result) {
   clearInterval(gIntervalAliens)
+  clearInterval(gIntervalCandy)
   gGame.isOn = false
-  toggleStartBtn()
   document.querySelector('.start-btn').innerText = 'Restart'
-  console.log(
-    'game-over!!!',
-    '\naliens left: ',
-    gGame.alienCount,
-    ' score: ',
-    gHero.score
-  )
+  if(result === 'win'){
+    document.querySelector('.game-result').innerText = 'VICTORY!!!'
+    playSound('sound/win.mp4')
+  }else{
+    document.querySelector('.game-result').innerText = 'You Lost'
+    playSound('sound/game-over.mp3')
+  }
+  toggle()
 }
